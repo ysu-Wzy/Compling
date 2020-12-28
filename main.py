@@ -15,6 +15,7 @@ class My_ui(Ui_Form):
         self.clearReuslt_btn.clicked.connect(self.clear_result)
         self.after_btn.clicked.connect(self.calculate_after)
         self.input_textEdit.textChanged.connect(self.input_changed)
+        self.front_btn.clicked.connect(self.calculate_front)
         self.cal = Calculator()
 
 
@@ -46,8 +47,17 @@ class My_ui(Ui_Form):
 
     def calculate_after(self):
         try:
-            expression, result = self.cal.caclute_after()
+            expression, result = self.cal.calculate(type='after')
             self.show_textBrowser.append("后缀表达式为:" + str(expression))
+            self.show_textBrowser.append("结果为:" + str(result))
+            self.show_textBrowser.append("---------------------")
+        except IndexError as e:
+            self.show_textBrowser.append("<font color = red>%s</font>" % str(e))
+
+    def calculate_front(self):
+        try:
+            expression, result = self.cal.calculate(type='front')
+            self.show_textBrowser.append("前缀表达式为:" + str(expression))
             self.show_textBrowser.append("结果为:" + str(result))
             self.show_textBrowser.append("---------------------")
         except IndexError as e:

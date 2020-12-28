@@ -3,11 +3,8 @@
 # https://blog.csdn.net/QFire/article/details/81236928
 letter = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 number = '0123456789'
-operator_list = '+-*/()'  # 运算符
+operator_list = '+-*/()^%'  # 运算符
 
-siyuan = []  # 四元式
-
-point = 4
 identifier = 1
 digit = 2
 operator = 3
@@ -18,6 +15,7 @@ ops_rule = {
     '-': 1,
     '*': 2,
     '/': 2,
+    '%': 2,
     '^': 3
 }
 ###################################        语法分析         #####################################
@@ -27,8 +25,8 @@ M -> +E|-E|E
 E -> TE~
 E~ -> +TE~|-TE~|&
 T -> FT~
-T~ -> *FT~|/FT~|&
-F -> (E)|indentifer|digit
+T~ -> *FT~|/FT~|&|^FT~|%FT~
+F -> (E)|indentifer|digit|-indentifer
 '''
 '''
 Indentifer： 标识符  digit：数字 M：表达式
@@ -101,9 +99,10 @@ class Calculator:
             self.table.append(string[m:])
         self.table.append('#')
         print('字符栈:', self.table, '\n词法正确')
-        return self.table
+        return self.table #+ ["#"]
 
     def yufa(self):
+        self.i = 0  # 指针归零
         self.wenfa = []
         try:  # 用异常处理程序捕获程序的错误，出现异常则报错
             self.m()
@@ -168,6 +167,16 @@ class Calculator:
             self.wenfa.append('T1 -> /FT1')
             self.f()
             self.t1()
+        elif (self.table[self.i] == '^'):
+            self.i += 1
+            self.wenfa.append('T1 -> ^FT1')
+            self.f()
+            self.t1()
+        elif (self.table[self.i] == '%'):
+            self.i += 1
+            self.wenfa.append('T1 -> %FT1')
+            self.f()
+            self.t1()
         else:
             self.wenfa.append('T1 -> &')
 
@@ -197,17 +206,23 @@ class Calculator:
         else:
             raise Exception  # 若均不符合，则引出异常
 
-    def caclute_after(self):
-        expression = self.middle_to_after(self.table[:-1])
-        return expression, self.expression_to_value(expression)
+    def calculate(self, type='after'):
+        if type == 'after':
+            expression = self.middle_to_after(self.table[:-1])
+            return expression, self.expression_to_value(expression, type)
+        elif type == 'front':
+            expression = self.middle_to_front(self.table[:-1])
+            return expression, self.expression_to_value(expression, type)
+        else:
+            raise TypeError
 
     def middle_to_after(self, tokens):
         """中缀表达式变为后缀表达式"""
-        expression = []
-        ops = []
+        expression = []  # s2
+        ops = []  # s1
         for item in tokens:
             # 当遇到运算符
-            if item in ['+', '-', '*', '/', "^"]:
+            if item in ['+', '-', '*', '/', "^", '%']:
                 while len(ops) >= 0:
                     # 如果栈中没有运算符，直接将运算符添加到后缀表达式
                     if len(ops) == 0:
@@ -238,24 +253,83 @@ class Calculator:
             # 遇到运算数，添加到表达式
             else:
                 expression.append(item)
-        # 最好将栈中全部运算符加到后缀表达式中
+        # 最后将栈中全部运算符加到后缀表达式中
         while len(ops) > 0:
             expression.append(ops.pop())
 
         return expression
 
-    def expression_to_value(self, expression):
+    def expression_to_value(self, expression, type='after'):
         """后缀表达式计算"""
-        stack_value = []
-        for item in expression:
-            if item in ['+', '-', '*', '/', '^']:
-                n2 = stack_value.pop()
-                n1 = stack_value.pop()
-                result = self.cal(n1, n2, item)
-                stack_value.append(result)
+        if type == 'after':
+            stack_value = []
+            for item in expression:
+                if item in ['+', '-', '*', '/', '^', '%']:
+                    n2 = stack_value.pop()
+                    n1 = stack_value.pop()
+                    result = self.cal(n1, n2, item)
+                    stack_value.append(result)
+                else:
+                    stack_value.append(float(item))
+            return stack_value[0]
+        elif type == 'front':
+            # expression.reverse()
+            stack_value = []
+            for item in expression[::-1]:
+                if item in ['+', '-', '*', '/', '^', '%']:
+                    n1 = stack_value.pop()
+                    n2 = stack_value.pop()
+                    result = self.cal(n1, n2, item)
+                    stack_value.append(result)
+                else:
+                    stack_value.append(float(item))
+            return stack_value[0]
+
+    def middle_to_front(self, tokens):
+        """中缀表达式变为前缀表达式"""
+        expression = []  # s2
+        ops = []  # s1
+        # tokens.reverse()
+        for item in tokens[::-1]:
+            # 当遇到运算符
+            if item in ['+', '-', '*', '/', "^", '%']:
+                while len(ops) >= 0:
+                    # 如果栈中没有运算符，直接将运算符添加到前缀表达式
+                    if len(ops) == 0:
+                        ops.append(item)
+                        break
+                    # 如果栈中有运算符
+                    op = ops.pop()
+                    # 如果栈顶的运算符比当前运算符级别低，当前运算符入栈
+                    if op == ')' or ops_rule[item] >= ops_rule[op]:
+                        ops.append(op)
+                        ops.append(item)
+                        break
+                    else:
+                        # 如果栈顶的运算符比当前运算符级别高，将栈顶运算符加入到表达式
+                        # 当前运算符与栈中后面的运算符比较
+                        expression.append(op)
+            # 遇到左括号入栈
+            elif item == '(':
+                while len(ops) > 0:
+                    op = ops.pop()
+                    if op == ')':
+                        break
+                    else:
+                        expression.append(op)
+            # 遇到右括号，将栈中运算符加入到表达式直到遇到左括号
+            elif item == ')':
+                ops.append(item)
+
+            # 遇到运算数，添加到表达式
             else:
-                stack_value.append(float(item))
-        return stack_value[0]
+                expression.append(item)
+        # 最后将栈中全部运算符加到后缀表达式中
+        while len(ops) > 0:
+            expression.append(ops.pop())
+        # tokens.reverse()
+        # expression.reverse()
+        return expression[::-1]
 
     # 计算函数
     def cal(self, n1, n2, op):
@@ -269,15 +343,17 @@ class Calculator:
             return n1 // n2
         if op == '^':
             return n1 ** n2
+        if op == '%':
+            return n1 % n2
 
 
 #######################################        主程序         #######################################
 if __name__ == '__main__':
     # string = input('请输入表达式：')
-    string = "1+1"
+    string = "1+((2+3)*4)+(-5)"
     cal = Calculator()
     tokens = cal.cifa(string)
     wenfa = cal.yufa()
-    expression, result = cal.caclute_after()
+    expression, result = cal.calculate('front')
     print(expression, result)
     # yuyi()
