@@ -28,7 +28,7 @@ E -> TE~
 E~ -> +TE~|-TE~|&
 T -> FT~
 T~ -> *FT~|/FT~|&|^FT~|%FT~|//FT~
-F -> (E)|indentifer|digit|-indentifer
+F -> (E)|indentifer|digit
 '''
 '''
 Indentifer： 标识符  digit：数字 M：表达式
@@ -43,17 +43,37 @@ class Calculator:
         self.dic = {}  # 符号表
         self.table = []  # 单词栈
         self.wenfa = []  # 字符串文法
-        self.cifa_dec = []
-        self.value_table = {}
+        self.cifa_dec = [] # 词法分析的描述
+        # self.token_value_table = {}
+        # self.show_value_table = {}
+        self.is_assign = False  # 是否为赋值语句
+        self.key = None  # 如果是赋值语句，单词是什么
 
+        self.word_dict={} # 单词表
     #####################################        词法分析        ######################################
     def cifa(self, string):  # 词法分析
+        self.is_assign = False  # 是否为赋值语句
+        string = string.replace(" ", "")
+        # 如果是赋值语句
+        if '=' in string:
+            try:
+                left_str, right_str = string.split("=")  # 只能包含一个等号
+            except:
+                raise EqualSignError
+            if left_str[0] not in letter: assert EqualSignError(0)
+            # 左侧必须为标识符
+            for i in range(len(left_str)):
+                if left_str not in letter + number:
+                    assert CifaError(i, "标识符中必须由数字和字母组成")
+            string = right_str
+            self.key = left_str
+            self.is_assign = True
+
         self.table = []
         print('')
         m = 0  # 数字或标识符的开始位置
         point = False  # 是否允许出现小数点
         state = None  # 1：为标识符 2：为数字串 3：为运算符
-        # is_deli = False
         next = False  # 当检测到“//”时要前进两次
         for i in range(len(string)):
             # if string[i]!="-":
@@ -63,12 +83,10 @@ class Calculator:
             if string[i] in operator_list:  # 如果是运算符
                 if state == identifier:  # state=1表明其前面的为标识符
                     self.cifa_dec.append(string[m:i] + '是标识符,类型码：1')
-                    # print(string[m:i], '是标识符,类型码：1')
                     self.dic[string[m:i]] = identifier
                     self.table.append(string[m:i])
                 elif state == digit:  # state=2表明其前面的为数字
                     self.cifa_dec.append(string[m:i] + '是数字，类型码：2')
-                    # print(string[m:i], '是数字，类型码：2')
                     self.dic[string[m:i]] = digit
                     self.table.append(string[m:i])
                     point = False
@@ -103,12 +121,9 @@ class Calculator:
                 m = i + 1
                 state = operator
                 self.cifa_dec.append(string[i] + '是运算符，类型码：3')
-                # print(string[i], '是运算符，类型码：3')
                 self.dic[string[i]] = operator
                 self.table.append(string[i])
             elif string[i] in number:  # 如果是数字
-                # if string[i] == '.':
-                #     point = False
                 if i == m:  # 是数字的第一个字符
                     point = True
                     state = digit
@@ -116,8 +131,6 @@ class Calculator:
                 if state == digit:  # 判断此时的状态，若state=2表明状态为无符号整数，而整数内不能包含字母，故报错
                     print('词法分析检测到错误,数字串中不能包含字母')
                     raise NumberError(i)
-                    # raise ll('dsa')
-                    # return '词法分析检测到错误,数字串中不能包含字母'
                 if i == m:  # 判断此时的字母是否为标识符的第一个字母，若是则改变状态为标识符
                     state = identifier
                     point = False
@@ -126,7 +139,6 @@ class Calculator:
                     continue
                 else:
                     print("小数点错误")
-                    # return "小数点错误"
                     raise PointError(i)
             else:  # 当输入的字符均不符合以上判断，则说明为非法字符，故报错
                 print('词法分析检测到非法字符')
@@ -134,28 +146,21 @@ class Calculator:
 
         if state == identifier:  # 当字符串检查完后，若字符串最后部分为标识符，应将其print出来
             self.cifa_dec.append(string[m:] + '是标识符，类型码：3')
-            # print(string[m:], '是标识符，类型码：3')
             self.dic[string[m:]] = identifier
             self.table.append(string[m:])
         elif state == digit:  # 若字符串最后部分为无符号整数，应将其print出来
             self.cifa_dec.append(string[m:] + '是数字，类型码：2')
-
-            # print(string[m:], '是无符号整数，类型码：2')
             self.dic[string[m:]] = digit
             self.table.append(string[m:])
         self.table.append('#')
         print('字符栈:', self.table, '\n词法正确')
-        return self.table  # + ["#"]
+        return self.table
 
     def yufa(self):
         self.i = 0  # 指针归零
         self.wenfa = []
-        # try:  # 用异常处理程序捕获程序的错误，出现异常则报错
         self.m()
         return self.wenfa
-        # except:
-        #     print('\n语法分析程序检查到错误,位置%s' % self.i)
-        #     return '\n语法分析程序检查到错误,位置%s' % self.i
 
     def m(self):  # PM程序
         if (self.table[self.i] == '+'):
@@ -246,27 +251,22 @@ class Calculator:
         elif (self.dic[self.table[self.i]] == digit):
             self.wenfa.append('F -> Digit ' + str(self.table[self.i]))
             self.i += 1
-        # elif (self.table[self.i] == '-'):
-        #     self.wenfa.append('F ->  Digit ' + str(self.table[self.i]))
-        #     self.i += 1
-        #     if (self.dic[self.table[self.i]] == identifier):
-        #         self.wenfa.append('F -> -identifier ' + str(self.table[self.i]))
-        #         self.i += 1
-        #     elif (self.dic[self.table[self.i]] == digit):
-        #         self.wenfa.append('F -> -Digit ' + str(self.table[self.i]))
-        #         self.i += 1
         else:
             raise CifaError(self.i, "未知错误，代码251行")  # 若均不符合，则引出异常
 
-    def calculate(self, type='after'):
+    def calculate(self, tokens=None, type='after'):
+        if tokens == None:
+            tokens = self.table
         if type == 'after':
-            expression = self.middle_to_after(self.table[:-1])
-            return expression, self.expression_to_value(expression, type)
+            expression = self.middle_to_after(tokens[:-1])
         elif type == 'front':
-            expression = self.middle_to_front(self.table[:-1])
-            return expression, self.expression_to_value(expression, type)
+            expression = self.middle_to_front(tokens[:-1])
         else:
             raise TypeError
+        result = self.expression_to_value(expression, type)
+        if self.is_assign:
+            self.word_dict[self.key] = result
+        return expression, result
 
     def middle_to_after(self, tokens):
         """中缀表达式变为后缀表达式"""
@@ -322,6 +322,11 @@ class Calculator:
                     result = self.cal(n1, n2, item)
                     stack_value.append(result)
                 else:
+                    if self.dic[item] == 1:  # 为标识符
+                        try:
+                            item = self.word_dict[item]
+                        except KeyError:
+                            raise IndentiNotFountError(item)
                     stack_value.append(float(item))
             return stack_value[0]
         elif type == 'front':
@@ -334,6 +339,11 @@ class Calculator:
                     result = self.cal(n1, n2, item)
                     stack_value.append(result)
                 else:
+                    if self.dic[item] == 1:  # 为标识符
+                        try:
+                            item = self.word_dict[item]
+                        except KeyError:
+                            raise IndentiNotFountError(item)
                     stack_value.append(float(item))
             return stack_value[0]
 
@@ -385,6 +395,7 @@ class Calculator:
 
     # 计算函数
     def cal(self, n1, n2, op):
+
         if op == '+':
             return n1 + n2
         if op == '-':
@@ -404,10 +415,11 @@ class Calculator:
 #######################################        主程序         #######################################
 if __name__ == '__main__':
     # string = input('请输入表达式：')
-    string = "A+1"
+    string = "a = 2+1"
     cal = Calculator()
     tokens = cal.cifa(string)
+    tokens = cal.cifa("b=a+1")
     wenfa = cal.yufa()
-    expression, result = cal.calculate('front')
-    print(expression, result)
+    expression, result = cal.calculate(type='front')
+    # print(expression, result)
     # yuyi()

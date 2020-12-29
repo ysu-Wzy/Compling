@@ -22,11 +22,13 @@ class EOFError(BaseError):
 
 
 class CifaError(BaseError):
-    def __init__(self,pos,dec):
+    def __init__(self, pos, dec):
         self.dec = dec
         self.position = pos
+
     def __str__(self):
-        return ("位置{}，{}").format(self.position,self.dec)
+        return ("位置{}，{}").format(self.position, self.dec)
+
 
 class NumberError(BaseError):
     def __str__(self):
@@ -36,3 +38,15 @@ class NumberError(BaseError):
 class InvalidCharError(BaseError):
     def __str__(self):
         return ("位置{}，词法分析错误，检测到非法字符".format(self.position))
+
+
+class EqualSignError(BaseError):
+    def __str__(self):
+        return ("词法分析错误，‘=‘过多")
+
+
+class IndentiNotFountError(BaseError):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return ("标识符{}没有在单词表中".format(self.value))
