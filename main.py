@@ -24,25 +24,24 @@ class My_ui(Ui_Form):
             string = self.input_textEdit.toPlainText()
             tokens = self.cal.cifa(string)
             self.show_textBrowser.append("词法分析结果：\n" + str(tokens))
+            self.show_textBrowser.append("\n".join(self.cal.cifa_dec))
             self.show_textBrowser.append("---------------------")
             self.yufa_btn.setEnabled(True)
-        except:
-            self.show_textBrowser.append("词法分析出现错误")
+        except Exception as e:
+            self.show_textBrowser.append("<font color = red>%s</font>"%str(e))
+            # self.show_textBrowser.append("词法分析出现错误")
             self.show_textBrowser.append("---------------------")
 
     def yufa(self):
         try:
             wenfa = self.cal.yufa()
-            if isinstance(wenfa, list):
-                self.show_textBrowser.append("语法分析结果：\n" + "\n".join(wenfa))
-                self.after_btn.setEnabled(True)
-                self.front_btn.setEnabled(True)
-            else:  # 出错
-                self.show_textBrowser.append("<font color = red>%s</font>" % wenfa.strip())
+            self.show_textBrowser.append("语法分析结果：\n" + "\n".join(wenfa))
+            self.after_btn.setEnabled(True)
+            self.front_btn.setEnabled(True)
             self.show_textBrowser.append("---------------------")
 
-        except:
-            self.show_textBrowser.append("语法分析出现错误")
+        except Exception as e:
+            self.show_textBrowser.append("<font color = red>%s</font>"%str(e))
             self.show_textBrowser.append("---------------------")
 
     def calculate_after(self):
@@ -65,7 +64,6 @@ class My_ui(Ui_Form):
 
     def clear_result(self):
         self.show_textBrowser.clear()
-        self.show_textBrowser.append(r"<font color = red>www.baidu.com</font>")
 
     def input_changed(self):
         self.yufa_btn.setEnabled(False)
