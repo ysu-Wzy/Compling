@@ -14,9 +14,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(865, 632)
-        self.gridLayout = QtWidgets.QGridLayout(Form)
-        self.gridLayout.setObjectName("gridLayout")
+        Form.resize(1014, 758)
+        self.verticalLayout_5 = QtWidgets.QVBoxLayout(Form)
+        self.verticalLayout_5.setObjectName("verticalLayout_5")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.splitter = QtWidgets.QSplitter(Form)
@@ -35,6 +35,18 @@ class Ui_Form(object):
         self.verticalLayout_3.addWidget(self.label)
         self.input_textEdit = QtWidgets.QPlainTextEdit(self.widget)
         self.input_textEdit.setMinimumSize(QtCore.QSize(0, 0))
+        font = QtGui.QFont()
+        font.setFamily("Times New Roman")
+        font.setPointSize(13)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setUnderline(False)
+        font.setWeight(50)
+        font.setStrikeOut(False)
+        font.setKerning(False)
+        font.setStyleStrategy(QtGui.QFont.PreferDefault)
+        self.input_textEdit.setFont(font)
+        self.input_textEdit.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
         self.input_textEdit.setTabStopWidth(79)
         self.input_textEdit.setObjectName("input_textEdit")
         self.verticalLayout_3.addWidget(self.input_textEdit)
@@ -51,6 +63,10 @@ class Ui_Form(object):
         self.verticalLayout.addWidget(self.label_2)
         self.value_show_textBrowser = QtWidgets.QTextBrowser(self.widget1)
         self.value_show_textBrowser.setMinimumSize(QtCore.QSize(0, 0))
+        font = QtGui.QFont()
+        font.setFamily("微软雅黑")
+        font.setPointSize(11)
+        self.value_show_textBrowser.setFont(font)
         self.value_show_textBrowser.setObjectName("value_show_textBrowser")
         self.verticalLayout.addWidget(self.value_show_textBrowser)
         self.horizontalLayout.addWidget(self.splitter)
@@ -94,20 +110,50 @@ class Ui_Form(object):
         self.label_3.setObjectName("label_3")
         self.verticalLayout_4.addWidget(self.label_3)
         self.show_textBrowser = QtWidgets.QTextBrowser(Form)
+        font = QtGui.QFont()
+        font.setFamily("微软雅黑")
+        font.setPointSize(11)
+        self.show_textBrowser.setFont(font)
         self.show_textBrowser.setObjectName("show_textBrowser")
         self.verticalLayout_4.addWidget(self.show_textBrowser)
         self.horizontalLayout.addLayout(self.verticalLayout_4)
         self.horizontalLayout.setStretch(0, 1)
         self.horizontalLayout.setStretch(4, 1)
-        self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
+        self.verticalLayout_5.addLayout(self.horizontalLayout)
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2.setSpacing(0)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_2.addItem(spacerItem2)
+        self.label_4 = QtWidgets.QLabel(Form)
+        self.label_4.setTextFormat(QtCore.Qt.MarkdownText)
+        self.label_4.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_4.setObjectName("label_4")
+        self.horizontalLayout_2.addWidget(self.label_4)
+        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_2.addItem(spacerItem3)
+        self.position_label = QtWidgets.QLabel(Form)
+        self.position_label.setObjectName("position_label")
+        self.horizontalLayout_2.addWidget(self.position_label)
+        self.horizontalLayout_2.setStretch(0, 1)
+        self.horizontalLayout_2.setStretch(2, 1)
+        self.verticalLayout_5.addLayout(self.horizontalLayout_2)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
+        Form.setWindowTitle(_translate("Form", "基于编译原理的公式计算器"))
         self.label.setText(_translate("Form", "表达式输入"))
+        self.input_textEdit.setPlainText(_translate("Form", "a=2+3*(7-4)+8/4;\n"
+"b=((2+3)*4-(8+2))/5;\n"
+"c=1314+(-25.5)*12;\n"
+"d=-2*(+3);\n"
+"e=123;\n"
+"f=12%2/5*5-4^2;\n"
+"g=(a+b*(d+c))^1;\n"
+"h=g//a"))
         self.label_2.setText(_translate("Form", "变量"))
         self.cifa_btn.setToolTip(_translate("Form", "<html><head/><body><p>如果没有选中的表达式，则默认选择最后一行</p></body></html>"))
         self.cifa_btn.setText(_translate("Form", "词法分析"))
@@ -119,3 +165,10 @@ class Ui_Form(object):
         self.clear_variable_btn.setText(_translate("Form", "清空变量区"))
         self.clearReuslt_btn.setText(_translate("Form", "清空输出结果"))
         self.label_3.setText(_translate("Form", "结果"))
+        self.show_textBrowser.setHtml(_translate("Form", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'微软雅黑\'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
+        self.label_4.setText(_translate("Form", "支持+、-、*、/、//、%、^运算，数据类型支持小数、负数、正数"))
+        self.position_label.setText(_translate("Form", "第0行，第0列"))

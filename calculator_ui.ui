@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>865</width>
-    <height>632</height>
+    <width>1014</width>
+    <height>758</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>基于编译原理的公式计算器</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+  <layout class="QVBoxLayout" name="verticalLayout_5">
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0,0,0,1">
      <item>
       <widget class="QSplitter" name="splitter">
@@ -49,6 +49,32 @@
              <width>0</width>
              <height>0</height>
             </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Times New Roman</family>
+             <pointsize>13</pointsize>
+             <weight>50</weight>
+             <italic>false</italic>
+             <bold>false</bold>
+             <underline>false</underline>
+             <strikeout>false</strikeout>
+             <stylestrategy>PreferDefault</stylestrategy>
+             <kerning>false</kerning>
+            </font>
+           </property>
+           <property name="locale">
+            <locale language="English" country="UnitedStates"/>
+           </property>
+           <property name="plainText">
+            <string>a=2+3*(7-4)+8/4;
+b=((2+3)*4-(8+2))/5;
+c=1314+(-25.5)*12;
+d=-2*(+3);
+e=123;
+f=12%2/5*5-4^2;
+g=(a+b*(d+c))^1;
+h=g//a</string>
            </property>
            <property name="tabStopWidth">
             <number>79</number>
@@ -85,6 +111,12 @@
              <width>0</width>
              <height>0</height>
             </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>微软雅黑</family>
+             <pointsize>11</pointsize>
+            </font>
            </property>
           </widget>
          </item>
@@ -205,9 +237,76 @@
         </widget>
        </item>
        <item>
-        <widget class="QTextBrowser" name="show_textBrowser"/>
+        <widget class="QTextBrowser" name="show_textBrowser">
+         <property name="font">
+          <font>
+           <family>微软雅黑</family>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
+         <property name="html">
+          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'微软雅黑'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
        </item>
       </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0,1,0">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <item>
+      <spacer name="horizontalSpacer_4">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>支持+、-、*、/、//、%、^运算，数据类型支持小数、负数、正数</string>
+       </property>
+       <property name="textFormat">
+        <enum>Qt::MarkdownText</enum>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="position_label">
+       <property name="text">
+        <string>第0行，第0列</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
